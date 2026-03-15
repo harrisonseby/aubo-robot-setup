@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+  The Aubo hardware macro is our local fixed copy (aubo_i5_ros2_control.xacro).
+
+  Arguments (pass from launch or xacro CLI): 
+    aubo_use_fake_hardware   (default: true)
+    aubo_robot_ip            (default: 192.168.127.128)
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aubo_arm">
+
+  <!-- ============================================================
+       Arguments
+  ============================================================ -->
+  <!-- These must be absolute paths; the launch file resolves them. -->
+
+  <xacro:arg name="aubo_use_fake_hardware"  default="true"/>
+  <xacro:arg name="aubo_robot_ip"           default="192.168.127.128"/>
+
+  <!-- ============================================================
+       Includes — Aubo (our local prefixed copies)
+  ============================================================ -->
+  <xacro:include filename="$(find aubo_examples)/urdf/aubo_i5_macro.xacro"/>
+  <xacro:include filename="$(find aubo_examples)/urdf/aubo_i5_ros2_control.xacro"/>
+
+  <!-- ============================================================
+       World link
+  ============================================================ -->
+  <link name="world"/>
+
+  <!-- ============================================================
+       Aubo i5
+       Positioned 1 m to the right of the Melfa (positive Y).
+       Adjust the origin xyz/rpy below to match your physical setup.
+  ============================================================ -->
+  <xacro:aubo_i5 parent="world" prefix="aubo_">
+    <origin xyz="0.0 1.0 0.0" rpy="0 0 0"/>
+  </xacro:aubo_i5>
+
+  <xacro:aubo_i5_ros2_control
+    name="aubo_i5"
+    prefix="aubo_"
+    use_fake_hardware="$(arg aubo_use_fake_hardware)"
+    robot_ip="$(arg aubo_robot_ip)"/>
+
+</robot>
